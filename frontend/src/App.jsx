@@ -101,9 +101,58 @@ export default function App() {
               </button>
             ))}
           </div>
-          <pre className="report">
-            {reports[active.reportKey] || "Waiting for this agent…"}
-          </pre>
+          {activeTab === "email" && reports.email_items?.length > 0 ? (
+            <div className="email-cards">
+              {reports.email_items.map((e, i) => (
+                <div
+                  key={i}
+                  className={"email-card p-" + (e.priority || "").toLowerCase()}
+                >
+                  <div className="email-top">
+                    <span className={"badge b-" + (e.priority || "").toLowerCase()}>
+                      {e.priority}
+                    </span>
+                    <strong>{e.sender}</strong>
+                    <span className="etype">{e.action_type}</span>
+                  </div>
+                  <div className="esubject">{e.subject}</div>
+                  <p className="esummary">{e.summary}</p>
+                  <div className="eaction">
+                    {e.recommended_action}
+                    {e.deadline !== "none" && (
+                      <span className="edeadline">Due: {e.deadline}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : activeTab === "news" && reports.news_items?.length > 0 ? (
+            <div className="news-cards">
+              {reports.news_items.map((n, i) => (
+              <a  
+                  key={i}
+                  className="news-card"
+                  href={n.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <div className="news-top">
+                    <span className={"badge h-" + (n.heat || "").toLowerCase()}>
+                      {n.heat}
+                    </span>
+                    <span className="nsource">{n.source}</span>
+                  </div>
+                  <div className="nheadline">{n.headline}</div>
+                  <p className="nsummary">{n.summary}</p>
+                  <span className="nlink">Read full story -&gt;</span>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <pre className="report">
+              {reports[active.reportKey] || "Waiting for this agent"}
+            </pre>
+          )}
 
           {activeTab === "monitor" && metrics.length > 0 && (
             <table className="metrics">
